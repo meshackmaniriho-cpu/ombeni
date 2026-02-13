@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Sensor Dashboard</title>
+<style>body{background:#f0f2f5;margin:0;height:100vh;display:flex;align-items:center;justify-content:center;color:#0b6;font-family:Arial,Helvetica,sans-serif} .card{background:#fff;width:360px;padding:22px;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.08);text-align:center} h2{margin:0 0 12px} p{margin:8px 0} button{margin-top:12px;background:#0b6;color:#fff;border:0;padding:10px 14px;border-radius:6px;cursor:pointer}</style>
+</head>
+<body>
+<div class="card">
+<h2>Sensor Dashboard</h2>
+<p class="lvl1">Ultrasonic Sensor: <span id="ul">15 cm</span></p>
+<p class="lvl2">Temperature: <span id="t">25°C</span></p>
+<p class="lvl2">Humidity: <span id="h">60%</span></p>
+<p class="lvl3">Light: <span id="l">ON</span></p>
+<p class="lvl3">Motion: <span id="m">Active</span></p>
+<p class="lvl3">Door: <span id="d">Closed</span></p>
+<p class="lvl3">Fan: <span id="fan">OFF</span> <button data-id="fan" class="act">Toggle</button></p>
+<p class="lvl3">Pump: <span id="pump">ON</span> <button data-id="pump" class="act">Toggle</button></p>
+<p class="lvl3">Heater: <span id="heat">OFF</span> <button data-id="heat" class="act">Toggle</button></p>
+<p class="lvl3">Actuator: <span id="act">Idle</span> <button id="act_right">Right</button> <button id="act_stop">Stop</button></p>
+<div style="display:flex;gap:8px;justify-content:center"><button id="lvl">Show: Basic</button></div>
+<script>
+const db={level:2,ul:15,t:25,h:60,l:'ON',m:'Active',d:'Closed',fan:'OFF',pump:'ON',heat:'OFF',act:'Idle'};
+let s=db.level;
+const upd=()=>{document.getElementById('lvl').textContent='Show: '+(s===1?'Basic':s===2?'Medium':'Full');document.querySelectorAll('.card p').forEach(p=>p.style.display=(p.classList.contains('lvl'+s)||p.classList.contains('lvl1'))?'block':'none')};
+const applyDB=()=>{Object.keys(db).forEach(k=>{if(document.getElementById(k))document.getElementById(k).textContent=db[k]})};
+applyDB();
+document.getElementById('lvl').onclick=()=>{s=s%3+1;db.level=s;upd()};
+document.querySelectorAll('.act').forEach(b=>b.onclick=()=>{const id=b.getAttribute('data-id');db[id]=db[id]==='ON'?'OFF':'ON';applyDB()});
+document.getElementById('act_right').onclick=()=>{db.act='Right';applyDB()};document.getElementById('act_stop').onclick=()=>{db.act='Idle';applyDB()};
+// keep UI synced with db (in case it is updated externally)
+setInterval(()=>{applyDB();upd()},2000);
+</script>
+</div>
+</body>
+</html>
